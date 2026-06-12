@@ -32,7 +32,7 @@ def load_engine():
     Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
     api_key = os.environ.get("GEMINI_API_KEY") or st.secrets["GEMINI_API_KEY"]
     Settings.llm = GoogleGenAI(model="gemma-4-26b-a4b-it", api_key=api_key)
-    docs = SimpleDirectoryReader("Documents", required_exts=[".pdf", ".html"]).load_data()
+    docs = SimpleDirectoryReader(".", required_exts=[".pdf", ".html"]).load_data()
     index = VectorStoreIndex.from_documents(docs)
     return index.as_query_engine()
 
