@@ -34,7 +34,10 @@ def load_engine():
     Settings.llm = GoogleGenAI(model="gemma-4-26b-a4b-it", api_key=api_key)
     docs = SimpleDirectoryReader(".", required_exts=[".pdf", ".html"]).load_data()
     index = VectorStoreIndex.from_documents(docs)
-    return index.as_query_engine()
+    return index.as_query_engine(
+    similarity_top_k=5,
+    response_mode="tree_summarize",
+)
 
 
 # ---------------------------------------------------------------
