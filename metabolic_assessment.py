@@ -491,9 +491,9 @@ def render_metabolic_assessment():
                 ldl = st.number_input("LDL (mg/dL) - if available", min_value=30.0, max_value=400.0, value=100.0)
                 total_chol = st.number_input("Total cholesterol (mg/dL) - if available", min_value=80.0, max_value=400.0, value=180.0)
             st.caption(
-                "ALT, AST, platelets, and HbA1c are collected above (under the "
-                "eGDR and liver health checks at the top of this page) and will "
-                "be included in your snapshot below if provided."
+                "ALT, AST, platelets, and HbA1c are collected (under the "
+                "eGDR and liver health checks) and will be included in "
+                "your snapshot below."
             )
 
         # --- Q5: Lifestyle / Diet ---
