@@ -473,6 +473,15 @@ def render_metabolic_assessment():
         "No needles, no waiting rooms - just answer a few questions, and "
         "get a clear, actionable picture of your health."
     )
+
+    st.warning(
+        "**Prototype for demonstration purposes.** MetaWell is not a "
+        "substitute for professional medical advice, diagnosis, or "
+        "treatment. Data entered here is not stored securely - please "
+        "avoid entering identifying personal information. Always consult "
+        "a qualified healthcare provider about your individual health."
+    )
+
     st.divider()
 
 
