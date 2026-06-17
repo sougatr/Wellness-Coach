@@ -1,0 +1,21 @@
+    '            "abnormal. Standard: below 8.5 is considered favourable, 8.5-9.0 "\n'
+    '            "is borderline, above 9.0 suggests insulin resistance."\n'
+    '        )\n'
+)
+
+count = content.count(old)
+print("Occurrences found:", count)
+if count == 0:
+    print("ERROR: pattern not found")
+else:
+    content = content.replace(old, new, 1)
+    with open('metabolic_assessment.py', 'w', encoding='utf-8') as f:
+        f.write(content)
+    print("SUCCESS: TyG caption updated with surrogate marker wording and standard")
+python3 -c "
+with open('metabolic_assessment.py') as f:
+    content = f.read()
+idx = content.find('TyG Index:** {tyg')
+print(repr(content[idx:idx+500]))
+"
+

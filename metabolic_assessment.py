@@ -441,135 +441,167 @@ def render_metabolic_assessment():
         "and everyday wellness — tailored for Indian populations."
     )
 
-    with st.form("metabolic_assessment_form"):
+    st.markdown("### Your metabolic health doesn't wait for a birthday")
+    st.write(
+        "Type 2 diabetes is showing up in teenagers. Fatty liver disease - "
+        "once seen mainly in older adults - is now common in people in "
+        "their 20s and 30s. And across every age group in India, the same "
+        "quiet drivers keep showing up: too much sugar and processed food, "
+        "not enough movement, and rising belly fat that often hides behind "
+        "a \"normal\" weight."
+    )
+    st.write(
+        "The good news: most of this is preventable, and it's never too "
+        "early - or too late - to start paying attention."
+    )
+    st.write(
+        "MetaWell gives you a quick, personalized snapshot of where you "
+        "stand, whether you're a student trying to build healthy habits "
+        "early, a working professional juggling stress and screen time, or "
+        "someone managing health in their 50s, 60s, and beyond. In just a "
+        "few minutes, you can check:"
+    )
+    st.markdown(
+        "- Your body composition and fat distribution (BMI, waist, waist-hip ratio)\n"
+        "- Early signs of insulin resistance, even before blood sugar looks abnormal\n"
+        "- Your heart disease risk over the next 10 years\n"
+        "- How your liver is doing - fatty liver often has no symptoms until it's advanced\n"
+        "- Everyday habits like sleep, activity, and stress that quietly shape "
+        "your metabolic health"
+    )
+    st.write(
+        "No needles, no waiting rooms - just answer a few questions, and "
+        "get a clear, actionable picture of your health."
+    )
+    st.divider()
 
-        # --- Q1: Ethnicity / Region ---
-        st.subheader("1. Background")
-        region = st.selectbox(
-            "Which region best describes your background?",
-            list(ETHNICITY_REGIONS.keys()),
-        )
 
-        # --- Q2: Demographics + Anthropometrics ---
-        st.subheader("2. About you")
-        col1, col2 = st.columns(2)
-        with col1:
-            age = st.number_input("Age (years)", min_value=18, max_value=100, value=40)
-            sex = st.radio("Sex", ["male", "female"], horizontal=True)
-            height_cm = st.number_input("Height (cm)", min_value=100.0, max_value=220.0, value=165.0)
-            weight_kg = st.number_input("Weight (kg)", min_value=30.0, max_value=200.0, value=70.0)
-        with col2:
-            waist_cm = st.number_input("Waist circumference (cm)", min_value=40.0, max_value=200.0, value=85.0)
-            hip_cm = st.number_input("Hip circumference (cm)", min_value=40.0, max_value=200.0, value=95.0)
+    # --- Q1: Ethnicity / Region ---
+    st.subheader("1. Background")
+    region = st.selectbox(
+        "Which region best describes your background?",
+        list(ETHNICITY_REGIONS.keys()),
+    )
 
-        # --- Q3: Blood pressure + meds ---
-        st.subheader("3. Blood pressure")
-        col5, col6 = st.columns(2)
-        with col5:
-            sbp = st.number_input("Systolic BP (mmHg)", min_value=80.0, max_value=220.0, value=120.0)
-        with col6:
-            on_bp_meds = st.checkbox("On blood pressure medication")
-        has_diabetes = st.checkbox("Diagnosed with diabetes")
-        has_hypertension = on_bp_meds or sbp >= 140
+    # --- Q2: Demographics + Anthropometrics ---
+    st.subheader("2. About you")
+    col1, col2 = st.columns(2)
+    with col1:
+        age = st.number_input("Age (years)", min_value=18, max_value=100, value=40)
+        sex = st.radio("Sex", ["male", "female"], horizontal=True)
+        height_cm = st.number_input("Height (cm)", min_value=100.0, max_value=220.0, value=165.0)
+        weight_kg = st.number_input("Weight (kg)", min_value=30.0, max_value=200.0, value=70.0)
+    with col2:
+        waist_cm = st.number_input("Waist circumference (cm)", min_value=40.0, max_value=200.0, value=85.0)
+        hip_cm = st.number_input("Hip circumference (cm)", min_value=40.0, max_value=200.0, value=95.0)
 
-        # --- Q4: Metabolic health (ASCVD, liver, insulin resistance/sensitivity) ---
-        st.subheader("4. Metabolic health")
+    # --- Q3: Blood pressure + meds ---
+    st.subheader("3. Blood pressure")
+    col5, col6 = st.columns(2)
+    with col5:
+        sbp = st.number_input("Systolic BP (mmHg)", min_value=80.0, max_value=220.0, value=120.0)
+    with col6:
+        on_bp_meds = st.checkbox("On blood pressure medication")
+    has_diabetes = st.checkbox("Diagnosed with diabetes")
+    has_hypertension = on_bp_meds or sbp >= 140
+
+    # --- Q4: Metabolic health (ASCVD, liver, insulin resistance/sensitivity) ---
+    st.subheader("4. Metabolic health")
+    st.caption(
+        "Includes ASCVD score, liver health, insulin resistance, and "
+        "insulin sensitivity. All values below are optional - fill in "
+        "whatever you have available."
+    )
+    have_labs = st.checkbox("I have recent blood test results", value=True)
+    fasting_glucose = total_chol = hdl = triglycerides = ldl = None
+    if have_labs:
+        colm1, colm2 = st.columns(2)
+        with colm1:
+            fasting_glucose = st.number_input("Fasting glucose (mg/dL) - if available", min_value=50.0, max_value=400.0, value=95.0)
+            hdl = st.number_input("HDL (mg/dL) - if available", min_value=15.0, max_value=120.0, value=45.0)
+            triglycerides = st.number_input("Triglycerides (mg/dL) - if available", min_value=30.0, max_value=1000.0, value=130.0)
+        with colm2:
+            ldl = st.number_input("LDL (mg/dL) - if available", min_value=30.0, max_value=400.0, value=100.0)
+            total_chol = st.number_input("Total cholesterol (mg/dL) - if available", min_value=80.0, max_value=400.0, value=180.0)
         st.caption(
-            "Includes ASCVD score, liver health, insulin resistance, and "
-            "insulin sensitivity. All values below are optional - fill in "
-            "whatever you have available."
-        )
-        have_labs = st.checkbox("I have recent blood test results", value=True)
-        fasting_glucose = total_chol = hdl = triglycerides = ldl = None
-        if have_labs:
-            colm1, colm2 = st.columns(2)
-            with colm1:
-                fasting_glucose = st.number_input("Fasting glucose (mg/dL) - if available", min_value=50.0, max_value=400.0, value=95.0)
-                hdl = st.number_input("HDL (mg/dL) - if available", min_value=15.0, max_value=120.0, value=45.0)
-                triglycerides = st.number_input("Triglycerides (mg/dL) - if available", min_value=30.0, max_value=1000.0, value=130.0)
-            with colm2:
-                ldl = st.number_input("LDL (mg/dL) - if available", min_value=30.0, max_value=400.0, value=100.0)
-                total_chol = st.number_input("Total cholesterol (mg/dL) - if available", min_value=80.0, max_value=400.0, value=180.0)
-            st.caption(
-                "ALT, AST, platelets, and HbA1c are collected (under the "
-                "eGDR and liver health checks) and will be included in "
-                "your snapshot below."
-            )
-
-        # --- Q5: Lifestyle / Diet ---
-        st.markdown("**Insulin sensitivity check (optional)**")
-        st.caption(
-            "eGDR estimates how well your body responds to insulin - useful "
-            "because it also reflects age-related muscle loss, which reduces "
-            "insulin sensitivity independent of weight."
-        )
-        want_egdr = st.checkbox("I would like to check my eGDR (needs HbA1c)")
-        hba1c = None
-        if want_egdr:
-            hba1c = st.number_input("HbA1c (%)", min_value=4.0, max_value=15.0, value=5.5)
-
-        st.markdown("**Liver health check (optional)**")
-        st.caption(
-            "ALT and AST are standard liver function test (LFT) values, "
-            "usually reported in U per L. Platelet count is from a CBC report "
-            "and is optional but improves the estimate."
-        )
-        want_liver = st.checkbox("Would you like to check your metabolic liver health?")
-        ast = alt = platelets = None
-        have_platelets = False
-        if want_liver:
-            col_liver1, col_liver2 = st.columns(2)
-            with col_liver1:
-                ast = st.number_input("AST (U/L)", min_value=5.0, max_value=500.0, value=25.0)
-            with col_liver2:
-                alt = st.number_input("ALT (U/L)", min_value=5.0, max_value=500.0, value=25.0)
-            have_platelets = st.checkbox("I also have my platelet count (from CBC)")
-            if have_platelets:
-                platelets = st.number_input("Platelet count (x10^9/L)", min_value=50.0, max_value=600.0, value=250.0)
-
-        st.subheader("5. Diet and lifestyle")
-        smoking_status = st.radio("Smoking status", ["Never", "Former", "Current"], horizontal=True)
-        upf_frequency = st.selectbox(
-            "How often do you eat packaged snacks, fried street food, sweets/desserts, or sugary drinks?",
-            [
-                "Rarely (few times a month)",
-                "A few times a week",
-                "Daily",
-                "Multiple times daily",
-            ],
-        )
-        salt_habit = st.radio(
-            "Do you usually add extra salt at the table, or eat a lot of pickles/papad/processed foods?",
-            ["Rarely", "Sometimes", "Often"],
-            horizontal=True,
+            "ALT, AST, platelets, and HbA1c are collected (under the "
+            "eGDR and liver health checks) and will be included in "
+            "your snapshot below."
         )
 
-        # --- Q6: Wellness check ---
-        st.subheader("6. Wellness check")
-        sleep_category = st.radio(
-            "On average, how many hours do you sleep per night?",
-            ["Less than 5 hours", "5-6 hours", "7-8 hours", "More than 8 hours"],
-            horizontal=True,
-        )
-        activity_category = st.radio(
-            "How many days a week do you do at least 30 minutes of moderate activity "
-            "(brisk walk, yoga, sports, etc.)?",
-            ["0 days", "1-2 days", "3-4 days", "5 or more days"],
-            horizontal=True,
-        )
-        stress_category = st.radio(
-            "How would you rate your typical stress level?",
-            ["Low", "Moderate", "High"],
-            horizontal=True,
-        )
-        mood_category = st.radio(
-            "Over the last 2 weeks, how often have you felt low on energy or "
-            "interest in things you'd normally enjoy?",
-            ["Not at all", "Several days", "More than half the days", "Nearly every day"],
-            horizontal=True,
-        )
+    st.markdown("**Insulin sensitivity check (optional)**")
+    st.caption(
+        "eGDR estimates how well your body responds to insulin - useful "
+        "because it also reflects age-related muscle loss, which reduces "
+        "insulin sensitivity independent of weight."
+    )
+    want_egdr = st.checkbox("I would like to check my eGDR (needs HbA1c)")
+    hba1c = None
+    if want_egdr:
+        hba1c = st.number_input("HbA1c (%)", min_value=4.0, max_value=15.0, value=5.5, key="hba1c_input")
 
-        submitted = st.form_submit_button("Get my health & wellness snapshot")
+    st.markdown("**Liver health check (optional)**")
+    st.caption(
+        "ALT and AST are standard liver function test (LFT) values, "
+        "usually reported in U per L. Platelet count is from a CBC report "
+        "and is optional but improves the estimate."
+    )
+    want_liver = st.checkbox("Would you like to check your metabolic liver health?")
+    ast = alt = platelets = None
+    have_platelets = False
+    if want_liver:
+        col_liver1, col_liver2 = st.columns(2)
+        with col_liver1:
+            ast = st.number_input("AST (U/L)", min_value=5.0, max_value=500.0, value=25.0, key="ast_input")
+        with col_liver2:
+            alt = st.number_input("ALT (U/L)", min_value=5.0, max_value=500.0, value=25.0, key="alt_input")
+        have_platelets = st.checkbox("I also have my platelet count (from CBC)", key="have_platelets_check")
+        if have_platelets:
+            platelets = st.number_input("Platelet count (x10^9/L)", min_value=50.0, max_value=600.0, value=250.0, key="platelets_input")
+
+    st.subheader("5. Diet and lifestyle")
+    smoking_status = st.radio("Smoking status", ["Never", "Former", "Current"], horizontal=True)
+    upf_frequency = st.selectbox(
+        "How often do you eat packaged snacks, fried street food, sweets/desserts, or sugary drinks?",
+        [
+            "Rarely (few times a month)",
+            "A few times a week",
+            "Daily",
+            "Multiple times daily",
+        ],
+    )
+    salt_habit = st.radio(
+        "Do you usually add extra salt at the table, or eat a lot of pickles/papad/processed foods?",
+        ["Rarely", "Sometimes", "Often"],
+        horizontal=True,
+    )
+
+    # --- Q6: Wellness check ---
+    st.subheader("6. Wellness check")
+    sleep_category = st.radio(
+        "On average, how many hours do you sleep per night?",
+        ["Less than 5 hours", "5-6 hours", "7-8 hours", "More than 8 hours"],
+        horizontal=True,
+    )
+    activity_category = st.radio(
+        "How many days a week do you do at least 30 minutes of moderate activity "
+        "(brisk walk, yoga, sports, etc.)?",
+        ["0 days", "1-2 days", "3-4 days", "5 or more days"],
+        horizontal=True,
+    )
+    stress_category = st.radio(
+        "How would you rate your typical stress level?",
+        ["Low", "Moderate", "High"],
+        horizontal=True,
+    )
+    mood_category = st.radio(
+        "Over the last 2 weeks, how often have you felt low on energy or "
+        "interest in things you'd normally enjoy?",
+        ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+        horizontal=True,
+    )
+
+    submitted = st.button("Get my health & wellness snapshot")
 
     if not submitted:
         return
@@ -632,27 +664,67 @@ def render_metabolic_assessment():
     tier_colors = {"GREEN": "🟢", "AMBER": "🟡", "RED": "🔴"}
     st.subheader(f"{tier_colors[final_tier]} Overall health & wellness tier: {final_tier}")
 
-    st.markdown(f"**BMI:** {bmi:.1f} kg/m²")
+    def bmi_classification(bmi_val):
+        if bmi_val < 18.5:
+            return "Underweight"
+        elif bmi_val < 23.0:
+            return "Normal range"
+        elif bmi_val < 25.0:
+            return "Overweight"
+        else:
+            return "Obese"
+
+    st.markdown(f"**BMI:** {bmi:.1f} kg/m² ({bmi_classification(bmi)})")
+    st.caption(
+        "Standard (Asian cutoffs, used for India): under 18.5 underweight, "
+        "18.5-22.9 normal, 23.0-24.9 overweight, 25.0 and above obese."
+    )
     st.markdown(
         f"**Waist-Hip Ratio:** {whr:.2f} "
         f"({'elevated' if whr_flag == 'elevated' else 'within normal range'} "
         f"for South Asian cutoffs)"
     )
+    st.caption(
+        "Standard (South Asian cutoffs): above 0.90 for men, above 0.85 for "
+        "women is considered elevated."
+    )
     st.markdown(
         f"**Waist circumference:** {waist_cm:.0f} cm "
         f"({'elevated' if waist_flag == 'elevated' else 'within normal range'})"
     )
+    st.caption(
+        "Standard (South Asian cutoffs): 90 cm or above for men, 80 cm or "
+        "above for women is considered elevated."
+    )
 
     if ldl is not None:
-        st.markdown(f"**LDL:** {ldl:.0f} mg/dL")
+        def ldl_classification(ldl_val):
+            if ldl_val < 100:
+                return "Optimal"
+            elif ldl_val < 130:
+                return "Near optimal"
+            elif ldl_val < 160:
+                return "Borderline high"
+            elif ldl_val < 190:
+                return "High"
+            else:
+                return "Very high"
+
+        st.markdown(f"**LDL:** {ldl:.0f} mg/dL ({ldl_classification(ldl)})")
+        st.caption(
+            "Standard: under 100 optimal, 100-129 near optimal, 130-159 "
+            "borderline high, 160-189 high, 190 and above very high (mg/dL)."
+        )
 
     if tyg is not None:
         st.markdown(f"**TyG Index:** {tyg:.2f}")
         st.caption(
-            "The TyG (Triglyceride-Glucose) index is a marker of **insulin resistance** — "
-            "higher values indicate greater insulin resistance, an early driver of "
-            "type 2 diabetes and metabolic syndrome, often detectable before fasting "
-            "glucose itself becomes abnormal."
+            "The TyG (Triglyceride-Glucose) index is a surrogate marker of "
+            "**insulin resistance** — higher values indicate greater insulin "
+            "resistance, an early driver of type 2 diabetes and metabolic "
+            "syndrome, often detectable before fasting glucose itself becomes "
+            "abnormal. Standard: below 8.5 is considered favourable, 8.5-9.0 "
+            "is borderline, above 9.0 suggests insulin resistance."
         )
     else:
         st.info("Add fasting glucose and triglycerides to see your TyG index (insulin resistance marker).")
@@ -661,15 +733,30 @@ def render_metabolic_assessment():
         st.markdown(f"**eGDR (estimated glucose disposal rate):** {egdr:.1f} mg/kg/min")
         st.caption(
             "eGDR estimates how efficiently your body clears glucose from the blood "
-            "using insulin — lower values mean greater insulin resistance. Values "
-            "below 8 are generally considered to indicate insulin resistance."
+            "using insulin — lower values mean greater insulin resistance. "
+            "Standard: 8 mg/kg/min or above is considered favourable; below "
+            "8 is generally considered to indicate insulin resistance."
         )
         st.write(egdr_age_note(age))
     elif want_egdr:
         st.info("Add your HbA1c value above to see your eGDR result.")
 
     if ascvd is not None:
-        st.markdown(f"**10-year ASCVD risk:** {ascvd:.1f}%")
+        def ascvd_classification(risk_val):
+            if risk_val < 5.0:
+                return "Low risk"
+            elif risk_val < 7.5:
+                return "Borderline risk"
+            elif risk_val < 20.0:
+                return "Intermediate risk"
+            else:
+                return "High risk"
+
+        st.markdown(f"**10-year ASCVD risk:** {ascvd:.1f}% ({ascvd_classification(ascvd)})")
+        st.caption(
+            "Standard: below 5% low risk, 5-7.5% borderline, 7.5-20% "
+            "intermediate risk, 20% and above high risk."
+        )
         age_range_note = ""
         if age < 40 or age > 79:
             age_range_note = (

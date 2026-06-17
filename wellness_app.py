@@ -36,7 +36,7 @@ def load_engine():
     docs = SimpleDirectoryReader(".", required_exts=[".pdf", ".html"]).load_data()
     index = VectorStoreIndex.from_documents(docs)
     return index.as_query_engine(
-    similarity_top_k=5,
+    similarity_top_k=10,
     response_mode="tree_summarize",
 )
 
@@ -233,25 +233,28 @@ elif page == "Ask a Question":
     engine = load_engine()
     question = st.text_input("Ask a question (e.g. 'suggest a workout for me', 'what diet suits me?'):")
     if question:
+        guidance_note = (
+            "You are a wellness coach. Answer the user's question using ONLY the provided "
+            "wellness guidelines. If multiple documents are relevant, prefer India-specific "
+            "guidance (such as the Dietary Guidelines for India) when the question relates to "
+            "Indian diets, food patterns, or population-specific recommendations, and use "
+            "general/international guidance to supplement where India-specific guidance is "
+            "not available. If the guidelines do not cover the question, say so rather than "
+            "inventing advice."
+        )
         if p:
             summary = build_profile_summary(p)
             full_query = (
-                "You are a wellness coach. Answer the user's question using ONLY the provided "
-                "wellness guidelines, personalised to this person's profile. If the guidelines "
-                "do not cover it, say so rather than inventing advice.\n\n"
+                f"{guidance_note} Personalise your answer to this person's profile.\n\n"
                 f"PERSON'S PROFILE:\n{summary}\n\n"
                 f"QUESTION: {question}"
             )
         else:
-            full_query = question
+            full_query = f"{guidance_note}\n\nQUESTION: {question}"
 
         with st.spinner("Searching your documents..."):
             answer = engine.query(full_query)
         st.subheader("Answer")
         st.write(str(answer))
-        st.subheader("Sources used")
-        for i, node in enumerate(answer.source_nodes):
-            st.markdown(f"**Source {i + 1}** (relevance: {node.score:.2f})")
-            st.write(node.node.get_content()[:300] + "...")
         if p:
             st.warning(DISCLAIMER)
