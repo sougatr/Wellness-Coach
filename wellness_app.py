@@ -26,15 +26,27 @@ DISCLAIMER = (
 # ---------------------------------------------------------------
 @st.cache_resource
 def load_engine():
-    from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
+    import chromadb
+    from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings, StorageContext
     from llama_index.embeddings.huggingface import HuggingFaceEmbedding
     from llama_index.llms.google_genai import GoogleGenAI
+    from llama_index.vector_stores.chroma import ChromaVectorStore
 
     Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
     api_key = os.environ.get("GEMINI_API_KEY") or st.secrets["GEMINI_API_KEY"]
     Settings.llm = GoogleGenAI(model="gemma-4-26b-a4b-it", api_key=api_key)
-    docs = SimpleDirectoryReader(".", required_exts=[".pdf", ".html"]).load_data()
-    index = VectorStoreIndex.from_documents(docs)
+
+    chroma_client = chromadb.PersistentClient(path="./chroma_db")
+    chroma_collection = chroma_client.get_or_create_collection("wellness_docs")
+    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+
+    if chroma_collection.count() > 0:
+        index = VectorStoreIndex.from_vector_store(vector_store)
+    else:
+        docs = SimpleDirectoryReader(".", required_exts=[".pdf", ".html"]).load_data()
+        storage_context = StorageContext.from_defaults(vector_store=vector_store)
+        index = VectorStoreIndex.from_documents(docs, storage_context=storage_context)
+
     return index.as_query_engine(
     similarity_top_k=10,
     response_mode="tree_summarize",
@@ -232,16 +244,16 @@ elif page == "Ask a Question":
 
     st.markdown("**Try asking something specific, like:**")
     st.markdown(
-        "- What do the Dietary Guidelines for India vis-\u00e0-vis ADA medical nutrition "
-        "therapy recommend for someone newly diagnosed with diabetes?\n"
-        "- What are good high-protein foods for older adults according to current "
-        "guidelines? When should it be taken in the day?\n"
-        "- How does yoga affect sleep quality? Any other suggestions to improve sleep "
-        "quality.\n"
-        "- What lifestyle changes help manage prediabetes? And what are the behaviour "
-        "changes to improve long-term outcomes in diabetes management?\n"
-        "- What should women over 50 prioritize for their health? Suggest specific "
-        "dietary and workout guidelines."
+        "- What is the difference between being overweight and being "
+        "metabolically unhealthy?\n"
+        "- How is insulin resistance different from diabetes?\n"
+        "- What lifestyle changes reverse insulin resistance fastest?\n"
+        "- My cholesterol is high but I feel fine - should I be worried?\n"
+        "- What is a good eating pattern for managing high triglycerides?\n"
+        "- Can losing weight improve insulin resistance?\n"
+        "- What Indian foods are good for managing insulin resistance?\n"
+        "- How much exercise do I actually need to improve my metabolic health?\n"
+        "- What should women focus on for heart health after 50?"
     )
 
     engine = load_engine()
