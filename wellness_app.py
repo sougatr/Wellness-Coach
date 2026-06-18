@@ -221,7 +221,7 @@ if page == "MetaWell Check":
 # PAGE — ASK A QUESTION  (profile-aware)
 # ===============================================================
 elif page == "Ask a Question":
-    st.title("Ask a Question")
+    st.title("Ask About Your Metabolic Health")
     p = st.session_state.get("profile")
     if p:
         st.caption(f"Answers personalised for {p.get('name', 'you')}, grounded in your guidelines.")
@@ -230,8 +230,22 @@ elif page == "Ask a Question":
     else:
         st.caption("General answers grounded in your guidelines.")
 
+    st.markdown("**Try asking something specific, like:**")
+    st.markdown(
+        "- What do the Dietary Guidelines for India vis-\u00e0-vis ADA medical nutrition "
+        "therapy recommend for someone newly diagnosed with diabetes?\n"
+        "- What are good high-protein foods for older adults according to current "
+        "guidelines? When should it be taken in the day?\n"
+        "- How does yoga affect sleep quality? Any other suggestions to improve sleep "
+        "quality.\n"
+        "- What lifestyle changes help manage prediabetes? And what are the behaviour "
+        "changes to improve long-term outcomes in diabetes management?\n"
+        "- What should women over 50 prioritize for their health? Suggest specific "
+        "dietary and workout guidelines."
+    )
+
     engine = load_engine()
-    question = st.text_input("Ask a question (e.g. 'suggest a workout for me', 'what diet suits me?'):")
+    question = st.text_input("Type your question here:")
     if question:
         guidance_note = (
             "You are a wellness coach. Answer the user's question using ONLY the provided "
