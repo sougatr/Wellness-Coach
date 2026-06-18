@@ -477,9 +477,23 @@ def render_metabolic_assessment():
     st.warning(
         "**Prototype for demonstration purposes.** MetaWell is not a "
         "substitute for professional medical advice, diagnosis, or "
-        "treatment. Data entered here is not stored securely - please "
-        "avoid entering identifying personal information. Always consult "
-        "a qualified healthcare provider about your individual health."
+        "treatment. As this is a prototype, use only laboratory values "
+        "and avoid personal identifiers. Consult a qualified healthcare "
+        "provider about your individual health."
+    )
+
+    st.markdown("#### What is metabolic health and insulin resistance?")
+    st.write(
+        "Metabolic health is how well your body manages energy - turning "
+        "food into fuel, storing fat properly, and keeping blood sugar, "
+        "blood pressure, and cholesterol in healthy ranges. Insulin "
+        "resistance is an early, common breakdown in this system: insulin "
+        "helps move sugar from your blood into your cells, but when cells "
+        "stop responding well, your body produces more and more insulin "
+        "just to keep up. Left unchecked, this can lead to type 2 "
+        "diabetes, fatty liver, and heart disease - often years before "
+        "symptoms appear. Caught early, it is largely reversible through "
+        "diet, activity, sleep, and weight management."
     )
 
     st.divider()
@@ -540,9 +554,11 @@ def render_metabolic_assessment():
 
     st.markdown("**Insulin sensitivity check (optional)**")
     st.caption(
-        "eGDR estimates how well your body responds to insulin - useful "
-        "because it also reflects age-related muscle loss, which reduces "
-        "insulin sensitivity independent of weight."
+        "eGDR is a simple way to estimate how well your body uses "
+        "insulin to manage blood sugar. As we age, we naturally lose "
+        "some muscle mass, and muscle is where a lot of blood sugar "
+        "gets used up - so less muscle can mean your body has to work "
+        "harder with insulin, even if your weight hasn't changed."
     )
     want_egdr = st.checkbox("I would like to check my eGDR (needs HbA1c)")
     hba1c = None
@@ -551,9 +567,17 @@ def render_metabolic_assessment():
 
     st.markdown("**Liver health check (optional)**")
     st.caption(
-        "ALT and AST are standard liver function test (LFT) values, "
-        "usually reported in U per L. Platelet count is from a CBC report "
-        "and is optional but improves the estimate."
+        "ALT and AST are enzymes made mainly in the liver. When liver "
+        "cells are stressed or damaged, these enzymes leak into the "
+        "bloodstream, so higher levels can be an early sign that the "
+        "liver needs attention. They are measured in U/L (units per "
+        "litre), a standard way labs report enzyme activity - you will "
+        "find these values on a routine liver function test (LFT). "
+        "Platelet count comes from a different test, a CBC (complete "
+        "blood count), and is included here because, combined with "
+        "ALT, AST, and your age, it helps estimate the risk of "
+        "long-term liver scarring (fibrosis) - something a single "
+        "liver enzyme value cannot tell you on its own."
     )
     want_liver = st.checkbox("Would you like to check your metabolic liver health?")
     ast = alt = platelets = None
@@ -676,17 +700,17 @@ def render_metabolic_assessment():
     def bmi_classification(bmi_val):
         if bmi_val < 18.5:
             return "Underweight"
-        elif bmi_val < 23.0:
-            return "Normal range"
         elif bmi_val < 25.0:
+            return "Normal range"
+        elif bmi_val < 30.0:
             return "Overweight"
         else:
             return "Obese"
 
     st.markdown(f"**BMI:** {bmi:.1f} kg/m² ({bmi_classification(bmi)})")
     st.caption(
-        "Standard (Asian cutoffs, used for India): under 18.5 underweight, "
-        "18.5-22.9 normal, 23.0-24.9 overweight, 25.0 and above obese."
+        "Standard (WHO classification): under 18.5 underweight, "
+        "18.5-24.9 normal, 25.0-29.9 overweight, 30.0 and above obese."
     )
     st.markdown(
         f"**Waist-Hip Ratio:** {whr:.2f} "
@@ -774,10 +798,14 @@ def render_metabolic_assessment():
                 "for this estimate, so treat the result as approximate.*"
             )
         st.caption(
-            "ASCVD risk estimates your 10-year probability of a heart attack or stroke. "
-            "It is used clinically to guide decisions on statin therapy, blood pressure "
-            "targets, and how aggressively to pursue lifestyle changes — complementing "
-            "(but distinct from) the insulin resistance signal from the TyG index.\n\n"
+            "ASCVD risk tells you the chance, out of 100, that someone with your "
+            "specific risk profile will have a heart attack or stroke in the next "
+            "10 years. For example, a 5% risk means about 5 out of 100 people with "
+            "similar numbers would be expected to have one of these events in that "
+            "time. Doctors use this estimate to decide how urgently to focus on "
+            "things like blood pressure, cholesterol, and lifestyle changes. This "
+            "complements (but is distinct from) the insulin resistance signal from "
+            "the TyG index.\n\n"
             "*Note: this estimate uses the published 2013 ACC/AHA Pooled Cohort Equations "
             "(reference coefficient set). These equations were derived from non-South Asian "
             "cohorts and may overestimate risk in South Asian populations — interpret "
