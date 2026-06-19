@@ -20,6 +20,7 @@ wellness_app.py inside a Streamlit page/tab.
 
 import math
 import streamlit as st
+from usage_tracking import log_event
 
 
 
@@ -435,6 +436,7 @@ def overall_tier(tiers: list) -> str:
 # ---------------------------------------------------------------------------
 
 def render_metabolic_assessment():
+    log_event("metawell_page_visited")
     st.header("MetaWell — Metabolic Health & Wellness Check")
     st.caption(
         "A quick assessment covering metabolic risk, diet patterns, liver health, "
@@ -635,6 +637,8 @@ def render_metabolic_assessment():
     )
 
     submitted = st.button("Get my health & wellness snapshot")
+    if submitted:
+        log_event("metawell_form_submitted")
 
     if not submitted:
         return

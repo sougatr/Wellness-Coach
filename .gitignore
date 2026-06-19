@@ -4,3 +4,4 @@ __pycache__/
 venv/
 .streamlit/secrets*
 chroma_db/
+usage_tracking.db
