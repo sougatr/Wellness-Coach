@@ -437,43 +437,86 @@ def overall_tier(tiers: list) -> str:
 
 def render_metabolic_assessment():
     log_event("metawell_page_visited")
-    st.header("MetaWell — Metabolic Health & Wellness Check")
-    st.caption(
-        "A quick assessment covering metabolic risk, diet patterns, liver health, "
-        "and everyday wellness — tailored for Indian populations."
-    )
+    st.header("WellMet — Wellness & Metabolic Health Score")
+    st.caption("Wellness first. Metabolic health decoded. Tailored for Indian populations.")
 
-    st.markdown("### Your numbers looked normal. But are they really?")
+    st.markdown("### Your lab tests were normal. But how well are you, really?")
     st.caption(
-        "Insulin resistance, early fatty liver, and rising heart risk build silently — "
-        "showing up only when results are read together. MetaWell does exactly that."
+        "Wellness is more than the absence of disease. Normal lab values don't always mean "
+        "your metabolic health is protected. WellMet reads your numbers together — the way they should be."
     )
 
     # What this tool checks — icon chips
     col_a, col_b, col_c, col_d = st.columns(4)
     with col_a:
-        st.markdown("🩸 **Insulin resistance** — even when glucose looks normal")
+        st.markdown("🌿 **Wellness** — sleep, stress, activity, mood")
     with col_b:
-        st.markdown("❤️ **10-year heart risk** — from your own lipid values")
+        st.markdown("🩸 **Insulin resistance** — even when glucose looks normal")
     with col_c:
-        st.markdown("🫀 **Liver health** — fatty liver has no symptoms until late")
+        st.markdown("❤️ **Heart risk** — your 10-year ASCVD score")
     with col_d:
-        st.markdown("🌙 **Sleep & stress** — often affect metabolism more than diet")
+        st.markdown("🫀 **Liver health** — fatty liver has no symptoms until late")
 
     st.warning(
         "⚕️ **Prototype — not medical advice.** Use lab values only; avoid personal identifiers. Consult your doctor for any medical decisions."
     )
 
-    # FAQ accordion
-    st.markdown("##### Quick answers")
-    with st.expander("What is metabolic health?"):
-        st.markdown("**Metabolic health** is how well your body manages blood sugar, blood pressure, cholesterol, waist fat, and triglycerides — all five in a healthy range, without medication.")
-    with st.expander("What is insulin resistance?"):
-        st.markdown("**Insulin resistance** is when your cells stop responding well to insulin, forcing your body to produce more and more — an early, silent driver of type 2 diabetes, fatty liver, and heart disease that is largely reversible if caught early.")
-    with st.expander("What is wellness — and how does it connect to metabolic health?"):
-        st.markdown("**Wellness** is your everyday lifestyle — sleep, activity, stress, and mood. Poor sleep raises cortisol, which raises blood sugar. Chronic stress drives visceral fat. Low activity worsens insulin sensitivity. Metabolic health and wellness are the same system viewed from two angles.")
-    with st.expander("What makes MetaWell different from a standard health check?"):
-        st.markdown("MetaWell combines four clinical indices — TyG, eGDR, ASCVD, and FIB-4 — using **Indian/South Asian cutoffs**, which detect metabolic risk at lower BMI thresholds than standard Western references. No other free tool bundles all four.")
+    # --- Awareness FAQ — 8 questions in narrative flow ---
+    st.markdown("##### Before you begin — ask yourself")
+
+    with st.expander("🩺  When did you last get a full blood test — sugar, lipids, liver enzymes? And did you actually read the results?"):
+        st.markdown(
+            "Most people glance at the 'normal' ticks and move on. "
+            "But individual values were never designed to be read alone — "
+            "metabolic risk only shows up when numbers are read **together**."
+        )
+
+    with st.expander("✅  Your tests came back normal. So you're healthy, right?"):
+        st.markdown(
+            "Not necessarily. Insulin resistance can be present for **10–15 years** before glucose rises. "
+            "Normal is the beginning of the investigation, not the end."
+        )
+
+    with st.expander("📐  Heard of TyG index? eGDR? ASCVD? FIB-4?"):
+        st.markdown(
+            "These are the four metabolic indices specialists use — but they rarely appear on standard reports. "
+            "WellMet computes all four from values you probably already have."
+        )
+
+    with st.expander("⚡  What if your 'normal' results are actually hiding something?"):
+        st.markdown(
+            "A TyG index above 8.5 can flag significant insulin resistance even when fasting glucose "
+            "and triglycerides are individually 'normal.' "
+            "Your body has been compensating quietly."
+        )
+
+    with st.expander("🔮  Diabetes. Hypertension. Fatty liver. Heart disease. What do they all have in common?"):
+        st.markdown(
+            "They all begin with years of silent metabolic dysfunction. "
+            "In India, metabolic syndrome affects **1 in 3 urban adults** — "
+            "most of whom had 'normal' tests for years before diagnosis."
+        )
+
+    with st.expander("🌙  You eat well. You exercise. But how are you sleeping?"):
+        st.markdown(
+            "Less than 6 hours per night reduces insulin sensitivity by up to **30%** — "
+            "equivalent to gaining several kilograms. "
+            "Sleep is not a lifestyle extra. It is a metabolic variable."
+        )
+
+    with st.expander("🇮🇳  Why do Indians get diabetes at a lower weight than the rest of the world?"):
+        st.markdown(
+            "South Asians develop insulin resistance and diabetes at significantly lower BMI thresholds than Western populations. "
+            "WellMet uses **Indian-specific cutoffs** for all four indices — no other free tool does this."
+        )
+
+    with st.expander("🚀  Ready to see what your results are really telling you?"):
+        st.markdown(
+            "Fill in your last blood test values — under 5 minutes. "
+            "WellMet computes your metabolic risk tier and gives you a personalised "
+            "**nutraceutical, dietary supplement, and yoga/mudra plan.** "
+            "No wearable. No subscription."
+        )
 
     st.divider()
 
