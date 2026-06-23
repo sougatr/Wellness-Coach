@@ -1,4 +1,5 @@
 from metabolic_assessment import render_metabolic_assessment
+from layer3_recommendations import render_layer3
 import os
 import math
 import streamlit as st
@@ -215,7 +216,7 @@ def build_profile_summary(p):
 # Sidebar navigation
 # ---------------------------------------------------------------
 st.sidebar.title("Wellness Coach")
-page = st.sidebar.radio("Choose:", ["MetaWell Check", "Ask a Question"])
+page = st.sidebar.radio("Choose:", ["MetaWell Check", "Ask a Question", "🌿 My Wellness Plan"])
 
 # show profile status in sidebar
 if st.session_state.get("profile"):
@@ -284,3 +285,9 @@ elif page == "Ask a Question":
         st.write(str(answer))
         if p:
             st.warning(DISCLAIMER)
+
+# ===============================================================
+# PAGE — LAYER 3: MY WELLNESS PLAN
+# ===============================================================
+elif page == "🌿 My Wellness Plan":
+    render_layer3()

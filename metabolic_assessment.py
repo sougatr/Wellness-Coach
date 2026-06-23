@@ -696,6 +696,31 @@ def render_metabolic_assessment():
 
     final_tier = overall_tier(tiers)
 
+    # --- Save risk outputs to session state for Layer 3 ---
+    st.session_state["risk_results"] = {
+        "final_tier": final_tier,
+        "age": age,
+        "sex": sex,
+        "has_diabetes": has_diabetes,
+        "has_hypertension": has_hypertension,
+        "bmi": bmi,
+        "tyg": tyg,
+        "tyg_tier": tyg_risk_tier(tyg) if tyg is not None else None,
+        "egdr": egdr,
+        "egdr_tier": egdr_risk_tier(egdr) if egdr is not None else None,
+        "ascvd": ascvd,
+        "ascvd_tier": ascvd_risk_tier(ascvd) if ascvd is not None else None,
+        "fib4": fib4,
+        "fib4_tier": fib4_risk_tier(fib4, age) if fib4 is not None else None,
+        "sleep_t": sleep_t,
+        "activity_t": activity_t,
+        "stress_t": stress_t,
+        "wellness_t": wellness_t,
+        "adiposity_tier": adiposity_tier,
+        "diet_tier": diet_tier,
+        "smoking_status": smoking_status,
+    }
+
     # --- Output ---
     st.divider()
     tier_colors = {"GREEN": "🟢", "AMBER": "🟡", "RED": "🔴"}
