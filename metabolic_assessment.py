@@ -443,60 +443,37 @@ def render_metabolic_assessment():
         "and everyday wellness — tailored for Indian populations."
     )
 
-    st.markdown("### Is Your Metabolic Health Really Normal?")
-    st.write(
-        "You got your blood work done. Fasting glucose, lipids, liver "
-        "tests - all came back normal. You moved on."
+    st.markdown("### Your numbers looked normal. But are they really?")
+    st.caption(
+        "Insulin resistance, early fatty liver, and rising heart risk build silently — "
+        "showing up only when results are read together. MetaWell does exactly that."
     )
-    st.write(
-        "But \"normal\" on one test doesn't always mean your metabolic "
-        "health is fine. Insulin resistance, early fatty liver, and rising "
-        "heart risk often build quietly for years. They show up when "
-        "numbers are looked at together - long before any single test "
-        "flags a problem."
-    )
-    st.write(
-        "MetaWell is built for exactly this. Whether you're checking in "
-        "after a routine annual test, or keeping an eye on things because "
-        "of extra weight, this tool looks at your numbers as a whole - "
-        "not just one at a time."
-    )
-    st.write(
-        "In a few minutes, using values you likely already have, you can check:"
-    )
-    st.markdown(
-        "- Early signs of insulin resistance, even when blood sugar looks normal\n"
-        "- Your 10-year heart disease risk\n"
-        "- How your liver is doing - fatty liver often has no symptoms until it's advanced\n"
-        "- How sleep and stress are quietly shaping your metabolism, often "
-        "more than diet alone"
-    )
-    st.write(
-        "No needles, no waiting rooms. Just answer a few questions, and "
-        "see what your own results have been telling you all along."
-    )
+
+    # What this tool checks — icon chips
+    col_a, col_b, col_c, col_d = st.columns(4)
+    with col_a:
+        st.markdown("🩸 **Insulin resistance** — even when glucose looks normal")
+    with col_b:
+        st.markdown("❤️ **10-year heart risk** — from your own lipid values")
+    with col_c:
+        st.markdown("🫀 **Liver health** — fatty liver has no symptoms until late")
+    with col_d:
+        st.markdown("🌙 **Sleep & stress** — often affect metabolism more than diet")
 
     st.warning(
-        "**Prototype for demonstration purposes.** MetaWell is not a "
-        "substitute for professional medical advice, diagnosis, or "
-        "treatment. As this is a prototype, use only laboratory values "
-        "and avoid personal identifiers. Consult a qualified healthcare "
-        "provider about your individual health."
+        "⚕️ **Prototype — not medical advice.** Use lab values only; avoid personal identifiers. Consult your doctor for any medical decisions."
     )
 
-    st.markdown("#### What is metabolic health and insulin resistance?")
-    st.write(
-        "Metabolic health is how well your body manages energy - turning "
-        "food into fuel, storing fat properly, and keeping blood sugar, "
-        "blood pressure, and cholesterol in healthy ranges. Insulin "
-        "resistance is an early, common breakdown in this system: insulin "
-        "helps move sugar from your blood into your cells, but when cells "
-        "stop responding well, your body produces more and more insulin "
-        "just to keep up. Left unchecked, this can lead to type 2 "
-        "diabetes, fatty liver, and heart disease - often years before "
-        "symptoms appear. Caught early, it is largely reversible through "
-        "diet, activity, sleep, and weight management."
-    )
+    # FAQ accordion
+    st.markdown("##### Quick answers")
+    with st.expander("What is metabolic health?"):
+        st.markdown("**Metabolic health** is how well your body manages blood sugar, blood pressure, cholesterol, waist fat, and triglycerides — all five in a healthy range, without medication.")
+    with st.expander("What is insulin resistance?"):
+        st.markdown("**Insulin resistance** is when your cells stop responding well to insulin, forcing your body to produce more and more — an early, silent driver of type 2 diabetes, fatty liver, and heart disease that is largely reversible if caught early.")
+    with st.expander("What is wellness — and how does it connect to metabolic health?"):
+        st.markdown("**Wellness** is your everyday lifestyle — sleep, activity, stress, and mood. Poor sleep raises cortisol, which raises blood sugar. Chronic stress drives visceral fat. Low activity worsens insulin sensitivity. Metabolic health and wellness are the same system viewed from two angles.")
+    with st.expander("What makes MetaWell different from a standard health check?"):
+        st.markdown("MetaWell combines four clinical indices — TyG, eGDR, ASCVD, and FIB-4 — using **Indian/South Asian cutoffs**, which detect metabolic risk at lower BMI thresholds than standard Western references. No other free tool bundles all four.")
 
     st.divider()
 
@@ -555,32 +532,14 @@ def render_metabolic_assessment():
         )
 
     st.markdown("**Insulin sensitivity check (optional)**")
-    st.caption(
-        "eGDR is a simple way to estimate how well your body uses "
-        "insulin to manage blood sugar. As we age, we naturally lose "
-        "some muscle mass, and muscle is where a lot of blood sugar "
-        "gets used up - so less muscle can mean your body has to work "
-        "harder with insulin, even if your weight hasn't changed."
-    )
+    st.caption("eGDR estimates how efficiently your body uses insulin — requires your HbA1c value.")
     want_egdr = st.checkbox("I would like to check my eGDR (needs HbA1c)")
     hba1c = None
     if want_egdr:
         hba1c = st.number_input("HbA1c (%)", min_value=4.0, max_value=15.0, value=5.5, key="hba1c_input")
 
     st.markdown("**Liver health check (optional)**")
-    st.caption(
-        "ALT and AST are enzymes made mainly in the liver. When liver "
-        "cells are stressed or damaged, these enzymes leak into the "
-        "bloodstream, so higher levels can be an early sign that the "
-        "liver needs attention. They are measured in U/L (units per "
-        "litre), a standard way labs report enzyme activity - you will "
-        "find these values on a routine liver function test (LFT). "
-        "Platelet count comes from a different test, a CBC (complete "
-        "blood count), and is included here because, combined with "
-        "ALT, AST, and your age, it helps estimate the risk of "
-        "long-term liver scarring (fibrosis) - something a single "
-        "liver enzyme value cannot tell you on its own."
-    )
+    st.caption("AST and ALT are from your LFT report. Platelet count (from CBC) is needed for the FIB-4 liver fibrosis score.")
     want_liver = st.checkbox("Would you like to check your metabolic liver health?")
     ast = alt = platelets = None
     have_platelets = False
@@ -815,31 +774,11 @@ def render_metabolic_assessment():
                 return "High risk"
 
         st.markdown(f"**10-year ASCVD risk:** {ascvd:.1f}% ({ascvd_classification(ascvd)})")
+        age_range_note = " *(age adjusted — validated range is 40–79)*" if (age < 40 or age > 79) else ""
         st.caption(
-            "Standard: below 5% low risk, 5-7.5% borderline, 7.5-20% "
-            "intermediate risk, 20% and above high risk."
-        )
-        age_range_note = ""
-        if age < 40 or age > 79:
-            age_range_note = (
-                "\n\n*This equation is formally validated only for ages 40-79; "
-                "your age has been adjusted to the nearest validated boundary "
-                "for this estimate, so treat the result as approximate.*"
-            )
-        st.caption(
-            "ASCVD risk tells you the chance, out of 100, that someone with your "
-            "specific risk profile will have a heart attack or stroke in the next "
-            "10 years. For example, a 5% risk means about 5 out of 100 people with "
-            "similar numbers would be expected to have one of these events in that "
-            "time. Doctors use this estimate to decide how urgently to focus on "
-            "things like blood pressure, cholesterol, and lifestyle changes. This "
-            "complements (but is distinct from) the insulin resistance signal from "
-            "the TyG index.\n\n"
-            "*Note: this estimate uses the published 2013 ACC/AHA Pooled Cohort Equations "
-            "(reference coefficient set). These equations were derived from non-South Asian "
-            "cohorts and may overestimate risk in South Asian populations — interpret "
-            "alongside your TyG index and waist-based measures, and discuss with your "
-            "doctor.*" + age_range_note
+            f"Chance of heart attack or stroke in the next 10 years. "
+            f"Scale: <5% low, 5–7.5% borderline, 7.5–20% intermediate, >20% high. "
+            f"Uses 2013 ACC/AHA equations — may slightly overestimate risk in South Asian populations.{age_range_note}"
         )
     else:
         st.info("Add total cholesterol, HDL, and fasting glucose to see your ASCVD risk estimate.")
@@ -872,82 +811,42 @@ def render_metabolic_assessment():
             age_note = fib4_age_reliability_note(age)
             if age_note:
                 st.caption(age_note)
-            st.caption(
-                "FIB-4 is a screening tool based on age, AST, ALT, and platelet count. "
-                "It estimates the likelihood of liver fibrosis but does not diagnose it — "
-                "further tests (such as elastography) may be needed for confirmation."
-            )
+            st.caption("FIB-4 is a screening estimate only — not a diagnosis. Further tests (e.g. elastography) are needed for confirmation.")
         else:
-            st.info(
-                "Add your platelet count (from a CBC report) to also see your FIB-4 "
-                "score, which estimates liver fibrosis risk."
-            )
+            st.info("Add your platelet count (CBC) to calculate your FIB-4 liver fibrosis score.")
 
-        st.caption(
-            "This liver check is for general awareness only and is not a substitute "
-            "for medical advice. Please discuss any abnormal results with your doctor."
-        )
+        st.caption("⚕️ Discuss any abnormal liver results with your doctor.")
 
     # --- Wellness snapshot ---
     st.divider()
     st.markdown(f"**Wellness snapshot:** {tier_colors[wellness_t]} {wellness_t}")
 
     sleep_messages = {
-        "GREEN": "Your sleep duration is in a healthy range.",
-        "AMBER": "Your sleep duration is a bit outside the ideal range — both "
-                 "too little and too much sleep are linked with poorer "
-                 "metabolic health over time.",
-        "RED": "Getting too little sleep regularly is strongly linked with "
-               "insulin resistance, weight gain, and increased appetite for "
-               "high-sugar foods. Improving sleep is often one of the most "
-               "impactful changes you can make.",
+        "GREEN": "🟢 **Sleep** — healthy range.",
+        "AMBER": "🟡 **Sleep** — slightly outside ideal; both too little and too much sleep worsen metabolic markers.",
+        "RED": "🔴 **Sleep** — poor sleep directly drives insulin resistance and weight gain.",
     }
-    st.write(f"**Sleep:** {sleep_messages[sleep_t]}")
-
     activity_messages = {
-        "GREEN": "You're meeting a good level of regular physical activity — "
-                 "this helps improve insulin sensitivity and supports "
-                 "healthy weight management.",
-        "AMBER": "Increasing your activity frequency, even by one or two "
-                 "more days a week, can meaningfully improve insulin "
-                 "sensitivity and metabolic markers.",
-        "RED": "Low physical activity is one of the most modifiable "
-               "contributors to insulin resistance and weight gain. Even "
-               "short, regular walks can make a real difference.",
+        "GREEN": "🟢 **Activity** — good level; supports insulin sensitivity and weight management.",
+        "AMBER": "🟡 **Activity** — one or two more active days per week would meaningfully improve your metabolic markers.",
+        "RED": "🔴 **Activity** — low activity is the most modifiable metabolic risk factor; even short daily walks help.",
     }
-    st.write(f"**Physical activity:** {activity_messages[activity_t]}")
-
     stress_messages = {
-        "GREEN": "Your stress levels seem manageable — that's good for "
-                 "both your metabolic and overall health.",
-        "AMBER": "Moderate stress is common, but chronic stress can affect "
-                 "appetite, sleep, and blood sugar regulation. Simple "
-                 "practices like short breaks, walks, or breathing "
-                 "exercises can help.",
-        "RED": "High stress levels can affect sleep, eating patterns, and "
-               "blood sugar control. Consider building in regular "
-               "stress-reduction practices, and talk to someone you trust "
-               "if it feels overwhelming.",
+        "GREEN": "🟢 **Stress** — manageable; good for both metabolic and overall health.",
+        "AMBER": "🟡 **Stress** — chronic stress disrupts blood sugar, sleep, and appetite regulation.",
+        "RED": "🔴 **Stress** — high stress directly raises cortisol, blood sugar, and visceral fat; prioritise stress reduction.",
     }
-    st.write(f"**Stress:** {stress_messages[stress_t]}")
-
     mood_messages = {
-        "GREEN": "Your energy and interest levels seem steady — that's a "
-                 "good sign for overall wellbeing.",
-        "AMBER": "It's normal to have some days with lower energy or "
-                 "interest. If this continues or affects your daily life, "
-                 "it may help to talk to someone you trust or a "
-                 "healthcare professional.",
-        "RED": "Feeling low on energy or interest most days can affect "
-               "overall wellbeing and is worth discussing with a doctor or "
-               "counsellor — support is available, and reaching out is a "
-               "good first step.",
+        "GREEN": "🟢 **Energy & mood** — steady.",
+        "AMBER": "🟡 **Energy & mood** — if low energy or interest persists, consider speaking with a healthcare professional.",
+        "RED": "🔴 **Energy & mood** — feeling this way most days is worth discussing with your doctor or counsellor.",
     }
-    st.write(f"**Energy & interest:** {mood_messages[mood_t]}")
 
-    st.caption(
-        "This wellness snapshot is for general awareness and is not a "
-        "diagnostic tool. If you have ongoing concerns about your mood, "
-        "energy, sleep, or stress, please speak with a doctor or "
-        "counsellor."
-    )
+    st.write(sleep_messages[sleep_t])
+    st.write(activity_messages[activity_t])
+    st.write(stress_messages[stress_t])
+    st.write(mood_messages[mood_t])
+    st.caption("⚕️ Wellness snapshot is for general awareness only — not a diagnostic tool.")
+
+    st.divider()
+    st.success("✅ Assessment complete. Go to **🌿 My Wellness Plan** in the sidebar for personalised supplement and yoga recommendations.")
