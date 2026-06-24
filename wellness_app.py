@@ -13,7 +13,7 @@ import streamlit as st
 #   personalise both the auto-plan and any questions asked.
 # ----------------------------------------------------------------------
 
-st.set_page_config(page_title="Wellness Coach", layout="wide")
+st.set_page_config(page_title="WellMet — Wellness & Metabolic Health Score", layout="wide")
 
 DISCLAIMER = (
     "This is general wellness guidance based on the provided guidelines, "
@@ -25,7 +25,7 @@ DISCLAIMER = (
 # ---------------------------------------------------------------
 # Shared engine loader (cached, loaded once)
 # ---------------------------------------------------------------
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def load_engine():
     import chromadb
     from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings, StorageContext
@@ -215,8 +215,9 @@ def build_profile_summary(p):
 # ---------------------------------------------------------------
 # Sidebar navigation
 # ---------------------------------------------------------------
-st.sidebar.title("Wellness Coach")
-page = st.sidebar.radio("Choose:", ["MetaWell Check", "Ask a Question", "🌿 My Wellness Plan"])
+st.sidebar.title("WellMet")
+st.sidebar.caption("Wellness First. Metabolic Health Decoded.")
+page = st.sidebar.radio("Choose:", ["MetaWell Check", "Ask a Question", "🌿 My Wellness Plan", "📊 Usage Dashboard"])
 
 # show profile status in sidebar
 if st.session_state.get("profile"):
@@ -257,9 +258,11 @@ elif page == "Ask a Question":
         "- What should women focus on for heart health after 50?"
     )
 
-    engine = load_engine()
+    engine = None
     question = st.text_input("Type your question here:")
     if question:
+        with st.spinner("Loading knowledge base — first time takes ~60 seconds..."):
+            engine = load_engine()
         guidance_note = (
             "You are a wellness coach. Answer the user's question using ONLY the provided "
             "wellness guidelines. If multiple documents are relevant, prefer India-specific "
@@ -291,3 +294,42 @@ elif page == "Ask a Question":
 # ===============================================================
 elif page == "🌿 My Wellness Plan":
     render_layer3()
+
+# ===============================================================
+# PAGE — USAGE DASHBOARD
+# ===============================================================
+elif page == "📊 Usage Dashboard":
+    from gsheets_tracking import get_summary, get_recent_events
+    st.header("📊 WellMet Usage Dashboard")
+    st.caption("Persistent tracking via Google Sheets — survives redeploys.")
+
+    summary = get_summary()
+
+    if not summary:
+        st.info("No usage data yet. Data accumulates as users interact with the app.")
+    else:
+        visited = summary.get("metawell_page_visited", 0)
+        submitted = summary.get("metawell_form_submitted", 0)
+        layer3 = summary.get("layer3_viewed", 0)
+        conversion = round((submitted / visited) * 100, 1) if visited > 0 else 0
+
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("👥 Page Visits", visited)
+        with col2:
+            st.metric("✅ Assessments Completed", submitted)
+        with col3:
+            st.metric("🌿 Wellness Plan Views", layer3)
+        with col4:
+            st.metric("📈 Completion Rate", f"{conversion}%")
+
+        st.divider()
+        st.markdown("**Recent activity (last 20 events):**")
+        recent = get_recent_events(20)
+        if recent:
+            import pandas as pd
+            df = pd.DataFrame(recent)
+            df.columns = ["Timestamp (UTC)", "Event", "Session ID"]
+            st.dataframe(df, use_container_width=True, hide_index=True)
+        else:
+            st.info("No recent events to display.")
