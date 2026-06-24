@@ -23,35 +23,25 @@ DISCLAIMER = (
 
 
 # ---------------------------------------------------------------
-# Shared engine loader (cached, loaded once)
+# Shared engine loader — in-memory vector store, no ChromaDB
 # ---------------------------------------------------------------
 @st.cache_resource(show_spinner=False)
 def load_engine():
-    import chromadb
-    from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings, StorageContext
+    from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
     from llama_index.embeddings.huggingface import HuggingFaceEmbedding
     from llama_index.llms.google_genai import GoogleGenAI
-    from llama_index.vector_stores.chroma import ChromaVectorStore
 
     Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
     api_key = os.environ.get("GEMINI_API_KEY") or st.secrets["GEMINI_API_KEY"]
     Settings.llm = GoogleGenAI(model="gemma-4-26b-a4b-it", api_key=api_key)
 
-    chroma_client = chromadb.PersistentClient(path="./chroma_db")
-    chroma_collection = chroma_client.get_or_create_collection("wellness_docs")
-    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-
-    if chroma_collection.count() > 0:
-        index = VectorStoreIndex.from_vector_store(vector_store)
-    else:
-        docs = SimpleDirectoryReader(".", required_exts=[".pdf", ".html"]).load_data()
-        storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = VectorStoreIndex.from_documents(docs, storage_context=storage_context)
+    docs = SimpleDirectoryReader(".", required_exts=[".pdf", ".html"]).load_data()
+    index = VectorStoreIndex.from_documents(docs)
 
     return index.as_query_engine(
-    similarity_top_k=10,
-    response_mode="tree_summarize",
-)
+        similarity_top_k=10,
+        response_mode="tree_summarize",
+    )
 
 
 # ---------------------------------------------------------------
