@@ -20,7 +20,7 @@ wellness_app.py inside a Streamlit page/tab.
 
 import math
 import streamlit as st
-from usage_tracking import log_event
+from gsheets_tracking import log_event
 
 
 
@@ -438,9 +438,9 @@ def overall_tier(tiers: list) -> str:
 def render_metabolic_assessment():
     log_event("metawell_page_visited")
     st.header("WellMet — Wellness & Metabolic Health Score")
-    st.caption("Wellness first. Metabolic health decoded. Tailored for Indian populations.")
+    st.caption("Wellness first. Metabolic health decoded.")
 
-    st.markdown("### Your lab tests were normal. But how well are you, really?")
+    st.markdown("### Your lab tests were normal. But how is your metabolic health — is it good?")
     st.caption(
         "Wellness is more than the absence of disease. Normal lab values don't always mean "
         "your metabolic health is protected. WellMet reads your numbers together — the way they should be."
@@ -493,7 +493,7 @@ def render_metabolic_assessment():
     with st.expander("🔮  Diabetes. Hypertension. Fatty liver. Heart disease. What do they all have in common?"):
         st.markdown(
             "They all begin with years of silent metabolic dysfunction. "
-            "In India, metabolic syndrome affects **1 in 3 urban adults** — "
+            "Globally, metabolic syndrome affects **1 in 3 urban adults** — "
             "most of whom had 'normal' tests for years before diagnosis."
         )
 
@@ -504,10 +504,13 @@ def render_metabolic_assessment():
             "Sleep is not a lifestyle extra. It is a metabolic variable."
         )
 
-    with st.expander("🇮🇳  Why do Indians get diabetes at a lower weight than the rest of the world?"):
+    with st.expander("🌍  Why does metabolic risk appear even when your weight seems normal?"):
         st.markdown(
-            "South Asians develop insulin resistance and diabetes at significantly lower BMI thresholds than Western populations. "
-            "WellMet uses **Indian-specific cutoffs** for all four indices — no other free tool does this."
+            "BMI alone is a poor predictor of metabolic health. "
+            "You can have a normal BMI and still have significant insulin resistance, "
+            "visceral fat, or early liver disease — all invisible on the scale. "
+            "WellMet computes four clinical indices that detect this hidden risk "
+            "from routine blood values, without requiring a wearable or CGM."
         )
 
     with st.expander("🚀  Ready to see what your results are really telling you?"):
@@ -732,7 +735,7 @@ def render_metabolic_assessment():
         if bmi_val < 18.5:
             return "Underweight"
         elif bmi_val < 25.0:
-            return "Normal range"
+            return "Normal"
         elif bmi_val < 30.0:
             return "Overweight"
         else:
@@ -740,16 +743,16 @@ def render_metabolic_assessment():
 
     st.markdown(f"**BMI:** {bmi:.1f} kg/m² ({bmi_classification(bmi)})")
     st.caption(
-        "Standard (WHO classification): under 18.5 underweight, "
-        "18.5-24.9 normal, 25.0-29.9 overweight, 30.0 and above obese."
+        "WHO global classification: under 18.5 underweight, "
+        "18.5–24.9 normal, 25.0–29.9 overweight, 30.0 and above obese."
     )
     st.markdown(
         f"**Waist-Hip Ratio:** {whr:.2f} "
         f"({'elevated' if whr_flag == 'elevated' else 'within normal range'} "
-        f"for South Asian cutoffs)"
+        f"for IDF cutoffs)"
     )
     st.caption(
-        "Standard (South Asian cutoffs): above 0.90 for men, above 0.85 for "
+        "IDF cutoffs: above 0.90 for men, above 0.85 for "
         "women is considered elevated."
     )
     st.markdown(
@@ -757,7 +760,7 @@ def render_metabolic_assessment():
         f"({'elevated' if waist_flag == 'elevated' else 'within normal range'})"
     )
     st.caption(
-        "Standard (South Asian cutoffs): 90 cm or above for men, 80 cm or "
+        "IDF cutoffs: 90 cm or above for men, 80 cm or "
         "above for women is considered elevated."
     )
 
