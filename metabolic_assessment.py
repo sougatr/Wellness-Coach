@@ -464,7 +464,7 @@ def render_metabolic_assessment():
     # --- Awareness FAQ — 8 questions in narrative flow ---
     st.markdown("##### Before you begin — ask yourself")
 
-    with st.expander("🩺  When did you last get a full blood test — sugar, lipids, liver enzymes? And did you actually read the results?"):
+    with st.expander("🩺  When did you last get a full blood test — sugar, lipids, liver enzymes?"):
         st.markdown(
             "Most people glance at the 'normal' ticks and move on. "
             "But individual values were never designed to be read alone — "
@@ -473,21 +473,13 @@ def render_metabolic_assessment():
 
     with st.expander("✅  Your tests came back normal. So you're healthy, right?"):
         st.markdown(
-            "Not necessarily. Insulin resistance can be present for **10–15 years** before glucose rises. "
-            "Normal is the beginning of the investigation, not the end."
+            "Not necessarily. Insulin resistance can be present for **10–15 years** before glucose rises."
         )
 
     with st.expander("📐  Heard of TyG index? eGDR? ASCVD? FIB-4?"):
         st.markdown(
             "These are the four metabolic indices specialists use — but they rarely appear on standard reports. "
             "WellMet computes all four from values you probably already have."
-        )
-
-    with st.expander("⚡  What if your 'normal' results are actually hiding something?"):
-        st.markdown(
-            "A TyG index above 8.5 can flag significant insulin resistance even when fasting glucose "
-            "and triglycerides are individually 'normal.' "
-            "Your body has been compensating quietly."
         )
 
     with st.expander("🔮  Diabetes. Hypertension. Fatty liver. Heart disease. What do they all have in common?"):
