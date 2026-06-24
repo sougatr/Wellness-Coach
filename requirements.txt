@@ -6,3 +6,5 @@ llama-index-readers-file
 pypdf
 chromadb
 llama-index-vector-stores-chroma
+gspread
+google-auth
